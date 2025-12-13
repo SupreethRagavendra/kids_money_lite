@@ -15,36 +15,28 @@ class _SplashScreenState extends State<SplashScreen> {
 
   final List<SplashPageData> _pages = [
     SplashPageData(
-      title: '🐷 Welcome!',
-      subtitle: 'Meet Penny the Piggy Bank',
-      emoji: '🐷',
-      description: 'Your new best friend for saving money!',
-      gradient: [Color(0xFFFFB6C1), Color(0xFFFF69B4)],
-      decorEmojis: ['💰', '✨', '⭐'],
+      title: 'Meet Penny!',
+      subtitle: 'Your Magical Savings Friend',
+      imagePath: 'assets/images/piggy_hero.png',
+      description: 'Penny will help you become a savings superstar!',
+      gradientColors: [Color(0xFFFF9A9E), Color(0xFFFECFEF)],
+      particleEmojis: ['💖', '✨', '🌟', '💫', '🦋'],
     ),
     SplashPageData(
-      title: '💰 Save Coins',
-      subtitle: 'Build your treasure!',
-      emoji: '💰',
-      description: 'Add coins to your piggy bank and watch it grow!',
-      gradient: [Color(0xFFFFD700), Color(0xFFFFA500)],
-      decorEmojis: ['🪙', '💎', '🏆'],
+      title: 'Collect Treasure!',
+      subtitle: 'Watch Your Coins Grow',
+      imagePath: 'assets/images/treasure.png',
+      description: 'Save coins and build your magical treasure chest!',
+      gradientColors: [Color(0xFFA18CD1), Color(0xFFFBC2EB)],
+      particleEmojis: ['💰', '💎', '👑', '🪙', '⭐'],
     ),
     SplashPageData(
-      title: '🎯 Set Goals',
-      subtitle: 'Dream big!',
-      emoji: '🎯',
-      description: 'Save for the things you really want!',
-      gradient: [Color(0xFF98FB98), Color(0xFF32CD32)],
-      decorEmojis: ['🎁', '🎮', '📚'],
-    ),
-    SplashPageData(
-      title: '⭐ Win Rewards',
-      subtitle: 'Complete challenges!',
-      emoji: '🏆',
-      description: 'Earn badges and stickers for being a super saver!',
-      gradient: [Color(0xFF87CEEB), Color(0xFF4169E1)],
-      decorEmojis: ['🥇', '🎉', '🌟'],
+      title: 'Reach Your Dreams!',
+      subtitle: 'Set Goals & Win Rewards',
+      imagePath: 'assets/images/trophy.png',
+      description: 'Complete challenges and earn amazing badges!',
+      gradientColors: [Color(0xFF667EEA), Color(0xFF764BA2)],
+      particleEmojis: ['🏆', '🎉', '🥇', '🎊', '🌈'],
     ),
   ];
 
@@ -55,26 +47,33 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void _autoAdvance() {
-    Future.delayed(const Duration(seconds: 3), () {
+    Future.delayed(const Duration(seconds: 4), () {
       if (mounted) {
         if (_currentPage < _pages.length - 1) {
           _pageController.nextPage(
-            duration: const Duration(milliseconds: 500),
-            curve: Curves.easeInOut,
+            duration: const Duration(milliseconds: 800),
+            curve: Curves.easeInOutCubic,
           );
           _autoAdvance();
         } else {
-          // Go to home after last page
           Future.delayed(const Duration(seconds: 2), () {
-            if (mounted) {
-              Navigator.of(context).pushReplacement(
-                MaterialPageRoute(builder: (_) => const HomeScreen()),
-              );
-            }
+            if (mounted) _navigateToHome();
           });
         }
       }
     });
+  }
+
+  void _navigateToHome() {
+    Navigator.of(context).pushReplacement(
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) => const HomeScreen(),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return FadeTransition(opacity: animation, child: child);
+        },
+        transitionDuration: const Duration(milliseconds: 500),
+      ),
+    );
   }
 
   @override
@@ -93,83 +92,105 @@ class _SplashScreenState extends State<SplashScreen> {
             controller: _pageController,
             itemCount: _pages.length,
             onPageChanged: (index) => setState(() => _currentPage = index),
-            itemBuilder: (context, index) => _SplashPage(data: _pages[index]),
-          ),
-
-          // Page Indicators
-          Positioned(
-            bottom: 100,
-            left: 0,
-            right: 0,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(_pages.length, (index) {
-                return Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 4),
-                  width: _currentPage == index ? 24 : 12,
-                  height: 12,
-                  decoration: BoxDecoration(
-                    color: _currentPage == index
-                        ? Colors.white
-                        : Colors.white.withOpacity(0.5),
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                ).animate(target: _currentPage == index ? 1 : 0)
-                    .scale(begin: const Offset(0.8, 0.8), end: const Offset(1, 1));
-              }),
+            itemBuilder: (context, index) => _PremiumSplashPage(
+              data: _pages[index],
+              isActive: _currentPage == index,
             ),
           ),
 
           // Skip Button
           Positioned(
-            top: 50,
-            right: 20,
-            child: TextButton(
-              onPressed: () {
-                Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (_) => const HomeScreen()),
-                );
-              },
-              child: const Text(
-                'Skip →',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
+            top: 40,
+            right: 16,
+            child: SafeArea(
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.25),
+                  borderRadius: BorderRadius.circular(20),
                 ),
-              ),
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(20),
+                    onTap: _navigateToHome,
+                    child: const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      child: Text(
+                        'Skip →',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ).animate().fadeIn(delay: 300.ms),
             ),
           ),
 
-          // Get Started Button (on last page)
-          if (_currentPage == _pages.length - 1)
-            Positioned(
-              bottom: 40,
-              left: 40,
-              right: 40,
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(builder: (_) => const HomeScreen()),
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.white,
-                  foregroundColor: _pages[_currentPage].gradient[1],
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30),
+          // Bottom section
+          Positioned(
+            bottom: 24,
+            left: 0,
+            right: 0,
+            child: SafeArea(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Page Indicators
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: List.generate(_pages.length, (index) {
+                      final isActive = _currentPage == index;
+                      return AnimatedContainer(
+                        duration: const Duration(milliseconds: 300),
+                        margin: const EdgeInsets.symmetric(horizontal: 4),
+                        width: isActive ? 28 : 10,
+                        height: 10,
+                        decoration: BoxDecoration(
+                          color: isActive ? Colors.white : Colors.white.withOpacity(0.4),
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                      );
+                    }),
                   ),
-                ),
-                child: const Text(
-                  "Let's Start! 🚀",
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ).animate().fadeIn().slideY(begin: 1, end: 0),
+
+                  const SizedBox(height: 16),
+
+                  // Get Started Button (on last page)
+                  if (_currentPage == _pages.length - 1)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 32),
+                      child: ElevatedButton(
+                        onPressed: _navigateToHome,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          foregroundColor: _pages[_currentPage].gradientColors[0],
+                          padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 40),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(25),
+                          ),
+                          elevation: 8,
+                        ),
+                        child: const Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              "Let's Go!",
+                              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                            ),
+                            SizedBox(width: 8),
+                            Text('🚀', style: TextStyle(fontSize: 20)),
+                          ],
+                        ),
+                      ).animate().fadeIn().slideY(begin: 0.3),
+                    ),
+                ],
+              ),
             ),
+          ),
         ],
       ),
     );
@@ -179,184 +200,144 @@ class _SplashScreenState extends State<SplashScreen> {
 class SplashPageData {
   final String title;
   final String subtitle;
-  final String emoji;
+  final String imagePath;
   final String description;
-  final List<Color> gradient;
-  final List<String> decorEmojis;
+  final List<Color> gradientColors;
+  final List<String> particleEmojis;
 
   SplashPageData({
     required this.title,
     required this.subtitle,
-    required this.emoji,
+    required this.imagePath,
     required this.description,
-    required this.gradient,
-    required this.decorEmojis,
+    required this.gradientColors,
+    required this.particleEmojis,
   });
 }
 
-class _SplashPage extends StatelessWidget {
+class _PremiumSplashPage extends StatelessWidget {
   final SplashPageData data;
+  final bool isActive;
 
-  const _SplashPage({required this.data});
+  const _PremiumSplashPage({required this.data, required this.isActive});
 
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: data.gradient,
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: data.gradientColors,
         ),
       ),
       child: SafeArea(
-        child: Stack(
-          children: [
-            // Floating decorations
-            ...List.generate(8, (index) => _buildFloatingEmoji(index)),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child: Column(
+            children: [
+              const SizedBox(height: 60),
 
-            // Main content
-            Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  // Main emoji with glow effect
-                  Container(
-                    width: 160,
-                    height: 160,
+              // Hero Image
+              Expanded(
+                flex: 5,
+                child: Center(
+                  child: Container(
+                    constraints: BoxConstraints(maxHeight: screenHeight * 0.35),
                     decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.white.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(24),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.white.withOpacity(0.4),
-                          blurRadius: 40,
-                          spreadRadius: 20,
+                          color: Colors.black.withOpacity(0.2),
+                          blurRadius: 30,
+                          offset: const Offset(0, 15),
                         ),
                       ],
                     ),
-                    child: Center(
-                      child: Text(
-                        data.emoji,
-                        style: const TextStyle(fontSize: 80),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(24),
+                      child: Image.asset(
+                        data.imagePath,
+                        fit: BoxFit.contain,
+                        errorBuilder: (_, __, ___) => Container(
+                          width: 180,
+                          height: 180,
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.3),
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(Icons.savings, size: 80, color: Colors.white),
+                        ),
                       ),
                     ),
                   )
-                      .animate()
-                      .scale(duration: 600.ms, curve: Curves.elasticOut)
-                      .then()
-                      .shimmer(duration: 2000.ms, color: Colors.white30),
+                      .animate(target: isActive ? 1 : 0)
+                      .scale(begin: const Offset(0.8, 0.8), duration: 600.ms, curve: Curves.easeOutBack)
+                      .fadeIn(),
+                ),
+              ),
 
-                  const SizedBox(height: 40),
+              // Text content
+              Expanded(
+                flex: 3,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      data.title,
+                      style: const TextStyle(
+                        fontSize: 32,
+                        fontWeight: FontWeight.w800,
+                        color: Colors.white,
+                        shadows: [Shadow(color: Colors.black26, offset: Offset(1, 2), blurRadius: 4)],
+                      ),
+                    ).animate(target: isActive ? 1 : 0).fadeIn(delay: 200.ms).slideY(begin: 0.2),
 
-                  // Title
-                  Text(
-                    data.title,
-                    style: const TextStyle(
-                      fontSize: 36,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                      shadows: [
-                        Shadow(
-                          color: Colors.black26,
-                          offset: Offset(2, 2),
-                          blurRadius: 8,
-                        ),
-                      ],
-                    ),
-                  ).animate().fadeIn(delay: 200.ms).slideY(begin: 0.3, end: 0),
+                    const SizedBox(height: 8),
 
-                  const SizedBox(height: 12),
+                    Text(
+                      data.subtitle,
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.white.withOpacity(0.9),
+                      ),
+                    ).animate(target: isActive ? 1 : 0).fadeIn(delay: 350.ms),
 
-                  // Subtitle
-                  Text(
-                    data.subtitle,
-                    style: TextStyle(
-                      fontSize: 22,
-                      color: Colors.white.withOpacity(0.95),
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ).animate().fadeIn(delay: 400.ms).slideY(begin: 0.3, end: 0),
+                    const SizedBox(height: 12),
 
-                  const SizedBox(height: 24),
-
-                  // Description
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 40),
-                    child: Text(
+                    Text(
                       data.description,
                       textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.white.withOpacity(0.85),
-                      ),
+                      style: TextStyle(fontSize: 14, color: Colors.white.withOpacity(0.8)),
+                    ).animate(target: isActive ? 1 : 0).fadeIn(delay: 500.ms),
+
+                    const SizedBox(height: 16),
+
+                    // Emoji row
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: data.particleEmojis.take(3).toList().asMap().entries.map((e) {
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 6),
+                          child: Text(e.value, style: const TextStyle(fontSize: 28))
+                              .animate(target: isActive ? 1 : 0, delay: (600 + e.key * 100).ms)
+                              .fadeIn()
+                              .scale(curve: Curves.elasticOut),
+                        );
+                      }).toList(),
                     ),
-                  ).animate().fadeIn(delay: 600.ms),
-
-                  const SizedBox(height: 40),
-
-                  // Decorative emojis row
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: data.decorEmojis.asMap().entries.map((entry) {
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 12),
-                        child: Text(
-                          entry.value,
-                          style: const TextStyle(fontSize: 40),
-                        )
-                            .animate(
-                              delay: (800 + entry.key * 150).ms,
-                              onPlay: (c) => c.repeat(reverse: true),
-                            )
-                            .scale(
-                              begin: const Offset(1, 1),
-                              end: const Offset(1.2, 1.2),
-                              duration: 800.ms,
-                            ),
-                      );
-                    }).toList(),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
+
+              const SizedBox(height: 60), // Space for bottom UI
+            ],
+          ),
         ),
       ),
-    );
-  }
-
-  Widget _buildFloatingEmoji(int index) {
-    final positions = [
-      [30.0, 80.0],
-      [300.0, 120.0],
-      [50.0, 250.0],
-      [320.0, 300.0],
-      [80.0, 450.0],
-      [280.0, 500.0],
-      [150.0, 600.0],
-      [350.0, 650.0],
-    ];
-
-    final emojis = ['✨', '⭐', '💫', '🌟', '✨', '⭐', '💫', '🌟'];
-
-    return Positioned(
-      left: positions[index][0],
-      top: positions[index][1],
-      child: Text(
-        emojis[index],
-        style: TextStyle(fontSize: 16 + (index % 3) * 6.0),
-      )
-          .animate(
-            delay: (index * 300).ms,
-            onPlay: (c) => c.repeat(reverse: true),
-          )
-          .fadeIn()
-          .scale(
-            begin: const Offset(0.8, 0.8),
-            end: const Offset(1.3, 1.3),
-            duration: (1500 + index * 200).ms,
-          ),
     );
   }
 }
