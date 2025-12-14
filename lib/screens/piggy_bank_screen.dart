@@ -115,7 +115,7 @@ class _PiggyBankScreenState extends State<PiggyBankScreen> {
                       ClipRRect(
                         borderRadius: BorderRadius.circular(20),
                         child: Image.asset(
-                          'assets/images/piggy_hero.png',
+                          'assets/images/app-icon.png',
                           width: 180,
                           height: 180,
                           fit: BoxFit.contain,

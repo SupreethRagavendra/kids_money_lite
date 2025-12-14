@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:confetti/confetti.dart';
 import '../providers/goal_provider.dart';
@@ -100,6 +101,7 @@ class _GoalScreenState extends State<GoalScreen> {
                   
               if (updatedGoal.isCompleted) {
                 _confettiController.play();
+                setState(() {}); // Trigger rebuild to show Lottie
               }
               
               Navigator.pop(ctx);
@@ -183,15 +185,23 @@ class _GoalScreenState extends State<GoalScreen> {
                                 ],
                               ),
                               const SizedBox(height: 16),
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(10),
-                                child: LinearProgressIndicator(
-                                  value: progress,
-                                  minHeight: 20,
-                                  backgroundColor: Colors.grey[200],
-                                  color: goal.isCompleted ? Colors.amber : Colors.green,
+                              
+                              // Smooth Progress Bar
+                              TweenAnimationBuilder<double>(
+                                tween: Tween<double>(begin: 0, end: progress),
+                                duration: const Duration(milliseconds: 1000),
+                                curve: Curves.easeOutCubic,
+                                builder: (context, value, _) => ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: LinearProgressIndicator(
+                                    value: value,
+                                    minHeight: 20,
+                                    backgroundColor: Colors.grey[200],
+                                    color: goal.isCompleted ? Colors.amber : Colors.green,
+                                  ),
                                 ),
                               ),
+
                               if (goal.isCompleted)
                                 const Padding(
                                   padding: EdgeInsets.only(top: 8.0),
@@ -211,6 +221,8 @@ class _GoalScreenState extends State<GoalScreen> {
                     },
                   ),
           ),
+          
+          // Existing Confetti
           Align(
             alignment: Alignment.topCenter,
             child: ConfettiWidget(
@@ -220,6 +232,21 @@ class _GoalScreenState extends State<GoalScreen> {
               colors: const [Colors.green, Colors.blue, Colors.pink, Colors.orange, Colors.purple],
             ),
           ),
+          // Lottie Celebration Overlay
+          if (_confettiController.state == ConfettiControllerState.playing)
+            Positioned.fill(
+              child: IgnorePointer(
+                child: Lottie.asset(
+                  'assets/animations/confetti.json',
+                  repeat: false,
+                  onLoaded: (composition) {
+                     // Optional: play sound
+                  },
+                ),
+              ),
+            ),
+
+
         ],
       ),
     );
