@@ -23,7 +23,7 @@ class KidsMoneyLiteApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => ChallengeProvider()),
       ],
       child: MaterialApp(
-        title: 'Kids Money Lite',
+        title: 'Money Tree',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           useMaterial3: true,
