@@ -36,7 +36,7 @@ class _PiggyBankScreenState extends State<PiggyBankScreen> {
     
     // Play sound immediately
     try {
-      _audioPlayer.play(AssetSource('audio/coin.mp3'));
+      _audioPlayer.play(AssetSource('audio/coin-recieved-230517.mp3'));
     } catch (e) {
       debugPrint("Error playing sound: $e");
     }
