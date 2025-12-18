@@ -1,7 +1,9 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:confetti/confetti.dart';
+import '../widgets/custom_back_button.dart';
 import '../providers/money_provider.dart';
 
 class PiggyBankScreen extends StatefulWidget {
@@ -14,6 +16,7 @@ class PiggyBankScreen extends StatefulWidget {
 class _PiggyBankScreenState extends State<PiggyBankScreen> {
   bool _isDroppingCoin = false;
   late ConfettiController _confettiController;
+  final AudioPlayer _audioPlayer = AudioPlayer();
 
   @override
   void initState() {
@@ -24,12 +27,20 @@ class _PiggyBankScreenState extends State<PiggyBankScreen> {
   @override
   void dispose() {
     _confettiController.dispose();
+    _audioPlayer.dispose();
     super.dispose();
   }
 
   void _addCoin(BuildContext context, double amount) {
     setState(() => _isDroppingCoin = true);
     
+    // Play sound immediately
+    try {
+      _audioPlayer.play(AssetSource('audio/coin.mp3'));
+    } catch (e) {
+      debugPrint("Error playing sound: $e");
+    }
+
     Future.delayed(const Duration(milliseconds: 600), () {
       if (mounted) {
         setState(() => _isDroppingCoin = false);
@@ -58,20 +69,12 @@ class _PiggyBankScreenState extends State<PiggyBankScreen> {
               Column(
                 children: [
                   // Custom App Bar
+                  // Custom App Bar
                   Padding(
                     padding: const EdgeInsets.all(16),
                     child: Row(
                       children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.3),
-                            shape: BoxShape.circle,
-                          ),
-                          child: IconButton(
-                            icon: const Icon(Icons.arrow_back, color: Colors.white),
-                            onPressed: () => Navigator.pop(context),
-                          ),
-                        ),
+                        const CustomBackButton(),
                         const Expanded(
                           child: Text(
                             "🐷 My Piggy Bank",

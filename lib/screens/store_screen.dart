@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../widgets/custom_back_button.dart';
 import '../providers/money_provider.dart';
 
 class StoreScreen extends StatelessWidget {
@@ -58,6 +59,7 @@ class StoreScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xFFE3F2FD), // Light blue
       appBar: AppBar(
+        leading: const CustomBackButton(color: Colors.blue),
         title: const Text("Smart Store"),
         backgroundColor: Colors.transparent,
         actions: [

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:confetti/confetti.dart';
+import '../widgets/custom_back_button.dart';
 import '../providers/goal_provider.dart';
 import '../providers/money_provider.dart';
 import '../models/goal_model.dart';
@@ -118,8 +119,10 @@ class _GoalScreenState extends State<GoalScreen> {
     final goalProvider = Provider.of<GoalProvider>(context);
 
     return Scaffold(
-      backgroundColor: const Color(0xFFE8F5E9), // Light green
+      backgroundColor: const Color(0xFFC8E6C9), // Light green
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
+        leading: const CustomBackButton(color: Colors.green),
         title: const Text("My Goals"),
         backgroundColor: Colors.transparent,
       ),

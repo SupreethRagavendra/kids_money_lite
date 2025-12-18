@@ -14,17 +14,17 @@ class ChallengeProvider with ChangeNotifier {
   
   // Simple predefined challenges
   final List<Map<String, dynamic>> _dailyTemplates = [
-    {'desc': 'Save 5 coins today', 'reward': 2.0},
+    {'desc': 'Eat healthy food', 'reward': 2.0},
     {'desc': 'Do not spend any money', 'reward': 5.0},
     {'desc': 'Clean your room', 'reward': 3.0},
-    {'desc': 'Read a book', 'reward': 2.0},
+    {'desc': 'Brush before sleep', 'reward': 2.0},
     {'desc': 'Help parents', 'reward': 4.0},
   ];
 
   Future<void> _loadChallenges() async {
     final prefs = await SharedPreferences.getInstance();
     final String? challengesString = prefs.getString('challenges');
-    final String? lastDate = prefs.getString('challenge_date');
+    final String? lastDate = prefs.getString('challenge_date_v2');
     
     // Check if new day
     final now = DateTime.now();
@@ -48,7 +48,7 @@ class ChallengeProvider with ChangeNotifier {
     final now = DateTime.now();
     // Pick 3 random challenges
     final shuffled = List.of(_dailyTemplates)..shuffle();
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < 5; i++) {
       _challenges.add(Challenge(
         id: "${now.millisecondsSinceEpoch}_$i",
         description: shuffled[i]['desc'],
@@ -59,7 +59,7 @@ class ChallengeProvider with ChangeNotifier {
     
     final prefs = await SharedPreferences.getInstance();
     final todayStr = "${now.year}-${now.month}-${now.day}";
-    prefs.setString('challenge_date', todayStr);
+    prefs.setString('challenge_date_v2', todayStr);
     _saveChallenges();
     notifyListeners();
   }

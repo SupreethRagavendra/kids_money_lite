@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import '../widgets/custom_back_button.dart';
 import '../providers/challenge_provider.dart';
 import '../providers/money_provider.dart';
 
@@ -14,6 +15,7 @@ class ChallengesScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xFFFFF9C4), // Light yellow
       appBar: AppBar(
+        leading: const CustomBackButton(color: Colors.orange),
         title: const Text("Daily Challenges"),
         backgroundColor: Colors.transparent,
       ),
